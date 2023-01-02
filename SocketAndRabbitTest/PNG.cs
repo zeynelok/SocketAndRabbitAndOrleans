@@ -5,22 +5,36 @@ using System.Text;
 
 namespace Server
 {
-    public class PNG : IAsyncCommand<StringPackageInfo>
+    public class PNG : IAsyncCommand<CustomSocketSession, StringPackageInfo>
     {
-        public ValueTask ExecuteAsync(IAppSession session, StringPackageInfo package)
+
+        public async ValueTask ExecuteAsync(CustomSocketSession session, StringPackageInfo package)
         {
-
+            session.ConnectedAnchorKey = package.Parameters[1];
             RabbitMQHandler.Publish(package);
-
-            session.SendAsync(Encoding.UTF8.GetBytes($"#ACK|{package.Body}"));
-
+            await session.SendAsync(Encoding.UTF8.GetBytes($"#ACK|{package.Body}"));
+            
             Console.ForegroundColor = ConsoleColor.Blue;
-
             Console.WriteLine($"Recieved Message PNG: {package.Body}");
             Console.ResetColor();
 
-            return ValueTask.CompletedTask;
         }
 
+        //public ValueTask ExecuteAsync(IAppSession session, StringPackageInfo package)
+        //{
+
+        //    RabbitMQHandler.Publish(package);
+
+        //    session.SendAsync(Encoding.UTF8.GetBytes($"#ACK|{package.Body}"));
+
+        //    Console.ForegroundColor = ConsoleColor.Blue;
+
+        //    Console.WriteLine($"Recieved Message PNG: {package.Body}");
+        //    Console.ResetColor();
+
+        //    return ValueTask.CompletedTask;
+        //}
+
+      
     }
 }

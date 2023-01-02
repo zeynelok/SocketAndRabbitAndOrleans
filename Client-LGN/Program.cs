@@ -13,16 +13,16 @@ using Socket client = new(
     ProtocolType.Tcp);
 
 await client.ConnectAsync(ipEndPoint);
-
 while (true)
 {
     // Send message.
 
-    var messageLGN = $"LGN|3100630018504B34|3100630018504B34|410";
-    var messageBytesLGN = Encoding.UTF8.GetBytes(messageLGN + "\r\n");
+    var message = $"LGN|3100630018504B34|3100630018504B34|410";
+
+    var messageBytesLGN = Encoding.UTF8.GetBytes(message + "\r\n");
 
     _ = await client.SendAsync(messageBytesLGN, SocketFlags.None);
-    Console.WriteLine($"Socket client sent message: \"{messageLGN}\" ");
+    Console.WriteLine($"Socket client sent message: \"{message}\" ");
 
 
     // Receive ack.
@@ -35,7 +35,10 @@ while (true)
     {
 
         Console.WriteLine($"Socket client received acknowledgment: \"{data}\" \n");
+
+        //client.Close();
+        //break;
     }
 
-    Thread.Sleep(5000);
+    Thread.Sleep(1000);
 }

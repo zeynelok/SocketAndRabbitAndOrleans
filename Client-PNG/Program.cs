@@ -1,6 +1,7 @@
 ﻿
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 IPHostEntry ipHostInfo = await Dns.GetHostEntryAsync("127.0.0.1");
@@ -18,6 +19,7 @@ while (true)
     // Send message.
 
     var message = $"PNG|53001F000A504B41|40|10|alert-type";
+
     var messageBytes = Encoding.UTF8.GetBytes(message + "\r\n");
 
     _ = await client.SendAsync(messageBytes, SocketFlags.None);
@@ -27,16 +29,15 @@ while (true)
     // Receive ack.
     var buffer = new byte[1024];
     var received = await client.ReceiveAsync(buffer, SocketFlags.None);
-    
+
     var response = Encoding.UTF8.GetString(buffer, 0, received);
     var key = response.Substring(0, 4).ToUpper();
     var data = response.Substring(5).ToUpper();
     if (key == "#ACK")
     {
         Console.WriteLine($"Socket client received acknowledgment: \"{data} \" \n");
-
     }
- 
+
 
     Thread.Sleep(5000);
 }

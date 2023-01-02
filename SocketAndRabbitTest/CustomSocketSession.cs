@@ -2,9 +2,13 @@
 
 namespace Server
 {
-    public class CustomSocketSession:AppSession
+    public class CustomSocketSession : AppSession
     {
-        public string ConnectedAnchorKey;
+        public string ConnectedAnchorKey { get; set; }
 
+        public ValueTask SendAsync(ReadOnlyMemory<byte> data)
+        {
+            return this.Channel.SendAsync(data);
+        }
     }
 }
